@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: sqlite:////app/pandm.db
+      FRONTEND_ORIGINS: http://localhost:8081,http://127.0.0.1:8081,http://localhost:5173,http://127.0.0.1:5173
+    volumes:
+      - ./backend/pandm.db:/app/pandm.db
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+
+
